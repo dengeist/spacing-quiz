@@ -1,5 +1,5 @@
 require('./database/db/connect');
-require('dotenv').config();
+// require('dotenv').config();
 
 var express = require('express'),
     mongoose = require('mongoose'),
@@ -7,18 +7,11 @@ var express = require('express'),
     path = require('path'),
     passport = require('passport'),
     Progress = require('./database/models/progress'),
-    bodyParser = require('body-parser');
-
-app.use(express.static(path.join(__dirname, 'build/')));
-
-// var index = path.join(__dirname, 'test-index.html');
-
-// app.get('/', function(req, res) {
-//   res.sendFile(index);
-// })
+    bodyParser = require('body-parser'),
+    index = path.join(__dirname, 'build/index.html');
 
 app.use(bodyParser.json());
-
+app.use(express.static(path.join(__dirname, 'build/')));
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -36,7 +29,11 @@ app.get('/getInfo', function(req, res) {
     });
 });
 
-app.set('port', process.env.NODE_PORT || 3000);
+app.get('/*', function(req, res) {
+  res.sendFile(index);
+}) // return index page on all unhandled routes
+
+app.set('port', process.env.PORT || 3000);
 
 app.listen(app.get('port'), function() {
     console.log("Listeing on Port " + app.get('port'));
